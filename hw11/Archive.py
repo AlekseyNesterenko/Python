@@ -54,6 +54,6 @@ class Archive:
 
 if __name__ == '__main__':
     archive1 = Archive("First Text", 1)
-    print(archive1.archive_text)  
-    print(archive1.archive_number)  
+    arch2 = Archive('Second text', 3.14)
+    print(arch2)  
     # Text is Запись 2 and number is 3.14. Also ['Запись 1', 'Запись 2'] and [42, 3.14]

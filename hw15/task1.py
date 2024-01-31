@@ -1,12 +1,8 @@
-# Создайте базовый класс Animal, который имеет атрибут name, представляющий имя животного.
-# Создайте классы Bird, Fish и Mammal, которые наследуются от базового класса Animal и добавляют дополнительные атрибуты и методы.
-# Создайте класс-фабрику AnimalFactory, который будет создавать экземпляры животных разных типов на основе переданного типа и параметров. 
-# Добавьте к ним логирование ошибок и полезной информации. 
+# Добавьте логирование ошибок и полезной информации. 
 # Написать 5-10 тестов для каждого задания при помощи 
 # любой понравившейся библиоткеки(pytest, unittest, doctest).
 
 import logging
-import unittest
 
 FORMAT = '%(asctime)s | %(levelname)s | %(message)s'
 
@@ -14,107 +10,95 @@ FORMAT = '%(asctime)s | %(levelname)s | %(message)s'
 logging.basicConfig(format=FORMAT,
                     filename=f"task1.log", 
                     filemode='a',
-                    level=logging.DEBUG,
+                    level=logging.NOTSET,
                     encoding='utf-8')
 
-class Animal:
+class Matrix:
     '''
-    Класс Animal, который имеет атрибут name, представляющий имя животного.
+    Класс Matrix, представляющий матрицу и обеспечивающий базовые операции с матрицами.
+    Атрибуты класса:
+    rows (int): Количество строк в матрице.
+    cols (int): Количество столбцов в матрице.
+    data (list): Двумерный список, содержащий элементы матрицы.
     '''
-    def __init__(self, name):
-        self.name = name
 
-class Fish(Animal):
-    '''
-    Fish имеет атрибут max_depth (максимальная глубина обитания) и метод depth, 
-    который возвращает категорию глубины рыбы (мелководная, средневодная, глубоководная) 
-    в зависимости от значения max_depth.
-    Если максимальная глубина обитания рыбы (max_depth) меньше 10, 
-    то она относится к категории "Мелководная рыба".
-    Если максимальная глубина обитания рыбы больше 100, 
-    то она относится к категории "Глубоководная рыба".
-    В противном случае, рыба относится к категории "Средневодная рыба".
-    '''
-    def __init__(self, name, max_depth):
-        super().__init__(name)
-        self.max_depth = max_depth
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+        self.data = [[0 for _ in range(cols)] for _ in range(rows)]
+        logging.info(f'Создана матрица размером {rows}x{cols}')
+
+    def __str__(self):
+        return str(self.data)
+
+    def __repr__(self):
+        return f'Matrix({self.rows}, {self.cols})'
     
-    def depth(self):
-        if self.max_depth < 10:
-            return f'Меловодная рыба'
-        elif self.max_depth > 100:
-            return f'Глубоководная рыба'
-        else:
-            return f'Средневодная рыба'
-
-class Bird(Animal):
-    '''
-    Bird имеет атрибут wingspan (размах крыльев) 
-    и метод wing_length, который возвращает длину крыла птицы.
-    '''
-    def __init__(self, name, wingspan):
-        super().__init__(name)
-        self.wingspan = wingspan
-    
-    def wing_length(self):
-        return self.wingspan / 2
-
-class Mammal(Animal):
-    '''
-    Mammal имеет атрибут weight (вес) и метод category, 
-    который возвращает категорию млекопитающего (Малявка, Обычный, Гигант) 
-    в зависимости от веса. 
-    Если вес объекта меньше 1, то он относится к категории "Малявка".
-    Если вес объекта больше 200, то он относится к категории "Гигант".
-    В противном случае, объект относится к категории "Обычный".
-    '''
-    def __init__(self, name, weight):
-        super().__init__(name)
-        self.weight = weight
-    
-    def category(self):
-        if self.weight < 1:
-            return f'Малявка'
-        elif self.weight > 200:
-            return f'Гигант'
-        else:
-            return f'Обычный'
-
-
-        
-class AnimalFactory():
-    '''
-    Класс-фабрику AnimalFactory, который будет создавать 
-    экземпляры животных разных типов на основе переданного типа и параметров.
-    '''
-
-    @staticmethod
-    def create_animal(animal_type, *args):
+    def __eq__(self, other):
         '''
-        Принимает следующие аргументы:
-        animal_type (строка) - тип животного (один из: 'Bird', 'Fish', 'Mammal').
-        *args - переменное количество аргументов, представляющих параметры для конкретного типа животного. 
-        Количество и типы аргументов могут различаться в зависимости от типа животного.
-        Метод create_animal должен создавать и возвращать экземпляр животного заданного типа с переданными параметрами.
-        Если animal_type не соответствует 'Bird', 'Fish' или 'Mammal', функция вызовет ValueError с сообщением 'Недопустимый тип животного'.
+        Метод, определяющий операцию "равно" для двух матриц. 
+        Сравнивает две матрицы и возвращает True, 
+        если они имеют одинаковое количество строк и столбцов, а также все элементы равны. 
+        Иначе возвращает False
         '''
-        if animal_type == 'Bird':
-            logging.debug(f'Создан класс {animal_type} с атрибутами {args}')
-            return Bird(*args)
-        elif animal_type == 'Fish':
-            logging.debug(f'Создан класс {animal_type} с атрибутами {args}')
-            return Fish(*args)
-        elif animal_type == 'Mammal':
-            logging.debug(f'Создан класс {animal_type} с атрибутами {args}')
-            return Mammal(*args)
-        else:
-            logging.error(f'При попытке создать класс {animal_type} возникла ошибка:'\
-                        f'{ValueError}(Недопустимый тип животного)')
-            raise ValueError('Недопустимый тип животного')
-            
-animal1 = AnimalFactory.create_animal('Bird', 'Орел', 200)
-animal2 = AnimalFactory.create_animal('Fish', 'Лосось', 50)
-animal3 = AnimalFactory.create_animal('Mammal', 'Слон', 5000)
-animal4 = AnimalFactory.create_animal('Spider', 'Elephant', 5000)
+        self_data = [sorted(i) for i in self.data]
+        other_data = [sorted(i) for i in other.data]
+        result = (self.rows == other.rows and 
+                self.cols == other.cols and 
+                self_data == other_data)
+        logging.debug(f'Сравнение двух матриц: {self} и {other}. Результат: {result}')
+        return result
 
-        
+    def __add__(self, other):
+        '''
+        Метод, определяющий операцию сложения двух матриц. 
+        Проверяет, что обе матрицы имеют одинаковые размеры (количество строк и столбцов). 
+        Если размеры совпадают, создает новую матрицу, 
+        где каждый элемент равен сумме соответствующих элементов входных матриц.
+        '''
+        if self.rows == other.rows and self.cols == other.cols:
+            result = Matrix(self.rows, self.cols)
+            result.data = [[self.data[i][j] + other.data[i][j]  
+                            for j in range(len(self.data[0]))] 
+                            for i in range(len(self.data))]
+        else:
+            logging.error(f'При сложении двух матриц возникла ошибка. {ValueError}(Сложение матриц невозможно)')
+            raise ValueError('Сложение матриц невозможно')
+        logging.debug(f'Сложение матрицы {self} и матрицы {other}. Результат: {result}')
+        return result
+
+
+    def __mul__(self, other):
+        '''
+        Метод, определяющий операцию умножения двух матриц. 
+        Проверяет, что количество столбцов в первой матрице равно количеству строк во второй матрице. 
+        Если условие выполняется, создает новую матрицу, где элемент на позиции [i][j] 
+        равен сумме произведений элементов соответствующей строки из первой матрицы и столбца из второй матрицы.
+        '''
+        try:
+            if self.cols == other.rows:
+                result = Matrix(self.rows, self.cols)
+                for i in range(self.rows):
+                    for j in range(other.cols):
+                        for k in range(self.cols):
+                            result.data[i][j] += self.data[i][k] * other.data[k][j]
+            else:
+                logging.error(f'При умножении двух матриц возникла ошибка. {ValueError}(Умножение матриц невозможно)')
+                raise ValueError('Умножение матриц невозможно')
+            logging.debug(f'Умножение матрицы {self} и матрицы {other}. Результат: {result}')
+            return result
+        except IndexError as e:
+            logging.error(f'При умножении двух матриц возникла ошибка. Проверьте правильность введенных данных: {IndexError}(list index out of range)')
+            raise IndexError('list index out of range')
+
+# Выполняем операцию умножения матриц
+matrix3 = Matrix(2, 3)
+matrix3.data = [[7, 8, 4], [9, 10, 5]]
+
+matrix4 = Matrix(2, 3)
+matrix4.data = [[7, 8, 4], [9, 10, 5]]
+
+result = matrix3 + matrix4
+# print(result)
+
+matrix5 = Matrix(4, 3)
